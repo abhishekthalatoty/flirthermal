@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dp"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+
+    <!-- Title  -->
+
+    <!-- Show SDK version  -->
+
+    <!-- Start / Stop discovery buttons  -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="63dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/start_discovery"
+            android:layout_width="116dp"
+            android:layout_height="wrap_content"
+            android:onClick="startDiscovery"
+            android:text="@string/start_discovery_text" />
+
+        <Button
+            android:id="@+id/stop_discovery"
+            android:layout_width="106dp"
+            android:layout_height="wrap_content"
+            android:onClick="stopDiscovery"
+            android:text="@string/stop_discovery_text" />
+
+        <TextView
+            android:id="@+id/discovery_status"
+            android:layout_width="115dp"
+            android:layout_height="27dp"
+            android:text="@string/discovery_status_text"
+            android:textSize="18sp" />
+    </LinearLayout>
+
+    <!-- Connect to FLIR ONE / Emulators buttons  -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/connect_flir_one"
+            android:layout_width="103dp"
+            android:layout_height="match_parent"
+            android:onClick="connectFlirOne"
+            android:text="@string/connect_f1_text" />
+
+        <Button
+            android:id="@+id/connect_s2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="connectSimulatorTwo"
+            android:text="@string/connect_sim2_text" />
+
+        <Button
+            android:id="@+id/disconnect_any"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="disconnect"
+            android:text="@string/disconnect_text" />
+
+        <TextView
+            android:id="@+id/connection_status_text"
+            android:layout_width="58dp"
+            android:layout_height="wrap_content"
+            android:text="@string/connection_status_text" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/msx_image"
+            android:layout_width="106dp"
+            android:layout_height="85dp"
+            android:contentDescription="image with IR and visual data mixed"
+            android:maxWidth="50dp"
+            android:minWidth="50dp" />
+
+        <ImageView
+            android:id="@+id/photo_image"
+            android:layout_width="380dp"
+            android:layout_height="381dp"
+            android:contentDescription="image with only visual image"
+            android:maxWidth="50dp"
+            android:minWidth="50dp" />
+    </LinearLayout>
+
+
+</LinearLayout>
