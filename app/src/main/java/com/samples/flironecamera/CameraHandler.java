@@ -21,6 +21,7 @@ import android.util.SparseArray;
 import androidx.appcompat.app.AlertDialog;
 
 import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
+import com.flir.thermalsdk.image.Point;
 import com.flir.thermalsdk.image.ThermalImage;
 import com.flir.thermalsdk.image.fusion.FusionMode;
 import com.flir.thermalsdk.live.Camera;
@@ -232,16 +233,8 @@ class CameraHandler {
             //Will be called on a non-ui thread,
             // extract information on the background thread and send the specific information to the UI thread
 
-            //Get a bitmap with only IR data
-
-//                    photoImage.setImageDrawable(new BitmapDrawable(getResources(),tempBitmap));
-
-
-
-
             Bitmap msxBitmap;
             {
-                ThermalStore.setThermalImage(thermalImage);
                 thermalImage.getFusion().setFusionMode(FusionMode.THERMAL_ONLY);
                 msxBitmap = BitmapAndroid.createBitmap(thermalImage.getImage()).getBitMap();
             }
@@ -249,14 +242,14 @@ class CameraHandler {
             //Get a bitmap with the visual image, it might have different dimensions then the bitmap from THERMAL_ONLY
             Bitmap dcBitmap = BitmapAndroid.createBitmap(thermalImage.getFusion().getPhoto()).getBitMap();
             Paint myRectPaint = new Paint();
-//                    myRectPaint.setStrokeWidth(5);
+                    myRectPaint.setStrokeWidth(5);
             myRectPaint.setColor(Color.RED);
             myRectPaint.setStyle(Paint.Style.STROKE);
 
             Bitmap tempBitmap = Bitmap.createBitmap(dcBitmap.getWidth(), dcBitmap.getHeight(), Bitmap.Config.RGB_565);
             Canvas tempCanvas = new Canvas(tempBitmap);
             tempCanvas.drawBitmap(dcBitmap, 0, 0, null);
-
+//
             FaceDetector faceDetector = new
                     FaceDetector.Builder(wrapper).setTrackingEnabled(true)
                     .build();
@@ -268,20 +261,50 @@ class CameraHandler {
 
             Frame frame = new Frame.Builder().setBitmap(dcBitmap).build();
             SparseArray<Face> faces = faceDetector.detect(frame);
+//            streamDataListener.images(msxBitmap, dcBitmap);
 
+
+            try {
             for(int i=0; i<faces.size(); i++) {
+
                 Face thisFace = faces.valueAt(i);
+                float width = thisFace.getWidth();
+                float height = thisFace.getHeight();
                 float x1 = thisFace.getPosition().x;
                 float y1 = thisFace.getPosition().y;
-                float x2 = x1 + thisFace.getWidth();
-                float y2 = y1 + thisFace.getHeight();
-                tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
-            }
+                float x2 = x1 + width;
+                float y2 = y1 + height;
+                int rectangleX = (int) (x1 + width / 2);
+                int rectangleY = (int) (y1 + height / 2);
+                    try{
+                        double averageTemp = 0;
+                        averageTemp = thermalImage.getValueAt(new Point(rectangleX, rectangleY));
+                        averageTemp-=273;
+                        Log.d("TEMP", Double.toString(averageTemp));
+                        myRectPaint.setTextSize((int) (70));
+                        tempCanvas.drawText( Double.toString( averageTemp), x1, y1, myRectPaint);
+                        if( averageTemp >= 36.5){
+                            myRectPaint.setColor(Color.RED);
+                            tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
+                        } else{
+                            myRectPaint.setColor(Color.BLUE);
+                            tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
+                        }
 
+                    }catch (Exception e){
+                        Log.d("EX", e.toString());
+                    }
+
+                tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);}
+            }catch (Exception e) {
+                Log.d("EX", e.toString());
+            }
+//            faceDetector.release();
+            streamDataListener.images(msxBitmap, tempBitmap);
             // end
 
             Log.d(TAG,"adding images to cache");
-            streamDataListener.images(msxBitmap,tempBitmap);
+
         }
     };
 

@@ -316,8 +316,8 @@ public class MainActivity extends AppCompatActivity {
 //                    }
 //                    photoImage.setImageDrawable(new BitmapDrawable(getResources(),tempBitmap));
 
-//                    msxImage.setImageBitmap(dataHolder.msxBitmap);
-                    photoImage.setImageBitmap(dataHolder.dcBitmap);
+                    msxImage.setImageBitmap(dataHolder.msxBitmap);
+//                    photoImage.setImageBitmap(dataHolder.dcBitmap);
 
 
                 }
@@ -342,76 +342,76 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "framebuffer size:" + framesBuffer.size());
                     FrameDataHolder poll = framesBuffer.poll();
 //                    msxImage.setImageBitmap(poll.msxBitmap);
+//
+//                    Bitmap customdcBitmap = poll.dcBitmap;
+//
+//
+//                    Bitmap tempBitmap = Bitmap.createBitmap(customdcBitmap.getWidth(), customdcBitmap.getHeight(), Bitmap.Config.RGB_565);
+//                    Canvas tempCanvas = new Canvas(tempBitmap);
+//                    tempCanvas.drawBitmap(customdcBitmap, 0, 0, null);
+//
+//                    FaceDetector faceDetector = new
+//                            FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(true)
+//                            .build();
+//                    if (!faceDetector.isOperational()) {
+////                new AlertDialog.Builder(v.getContext()).setMessage("Could not set up the face detector!").show();
+//                        return;
+//                    }
+//
+//                    Paint myRectPaint = new Paint();
+//                    myRectPaint.setStrokeWidth(5);
+//                    myRectPaint.setColor(Color.RED);
+//                    myRectPaint.setStyle(Paint.Style.STROKE);
+//
+//                    Frame frame = new Frame.Builder().setBitmap(customdcBitmap).build();
+//                    SparseArray<Face> faces = faceDetector.detect(frame);
+//
+//                    Log.d("FACES", "Number of faces : "+faces.size());
+//                    for (int i = 0; i < faces.size(); i++) {
+//                        Face thisFace = faces.valueAt(i);
+//                        float x1 = thisFace.getPosition().x;
+//                        float y1 = thisFace.getPosition().y;
+//                        float x2 = x1 + thisFace.getWidth();
+//                        float y2 = y1 + thisFace.getHeight();
+//                        float width = thisFace.getWidth();
+//                        float height = thisFace.getHeight();
+//                        myRectPaint.setColor(Color.BLUE);
+//                        try {
+//                            ThermalImage thermalImage = ThermalStore.getThermalImage();
+//                            int rectangleX = (int) (x1 + width / 2);
+//                            int rectangleY = (int) (y1 + height / 2);
+//                            try{
+//                                double averageTemp = 0;
+//                                averageTemp = thermalImage.getValueAt(new Point(rectangleX, rectangleY)) ;
+//                                averageTemp += thermalImage.getValueAt(new Point((int)(x1+width/3), (int)(y1+height/3)));
+//                                averageTemp += thermalImage.getValueAt(new Point((int)(x1+(2*(width/3))), (int)(y1+height/3)));
+//                                averageTemp += thermalImage.getValueAt(new Point((int)(x1+width/3), (int)(y1+ (2*(height/3)))));
+//                                averageTemp += thermalImage.getValueAt(new Point((int)(x1+(2*(width/3))), (int)((y1+2*(height/3)))));
+//                                averageTemp/=5.0;
+//                                averageTemp-=273;
+//                                Log.d("TEMP", Double.toString(averageTemp));
+//                                myRectPaint.setTextSize((int) (70));
+//                                tempCanvas.drawText( Double.toString( averageTemp), x1, y1, myRectPaint);
+//                                if( averageTemp >= 36.5){
+//                                    myRectPaint.setColor(Color.RED);
+//                                    tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
+//                                } else{
+//                                    myRectPaint.setColor(Color.BLUE);
+//                                    tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
+//                                }
+//
+//                            }catch (Exception e){
+//                                Log.d("EX", e.toString());
+//                            }
+//                        } catch (Exception e) {
+//                            Log.d("EX", e.toString());
+//                        }
+//                    }
+//
+//
+//                    photoImage.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
 
-                    Bitmap customdcBitmap = poll.dcBitmap;
-
-
-                    Bitmap tempBitmap = Bitmap.createBitmap(customdcBitmap.getWidth(), customdcBitmap.getHeight(), Bitmap.Config.RGB_565);
-                    Canvas tempCanvas = new Canvas(tempBitmap);
-                    tempCanvas.drawBitmap(customdcBitmap, 0, 0, null);
-
-                    FaceDetector faceDetector = new
-                            FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(true)
-                            .build();
-                    if (!faceDetector.isOperational()) {
-//                new AlertDialog.Builder(v.getContext()).setMessage("Could not set up the face detector!").show();
-                        return;
-                    }
-
-                    Paint myRectPaint = new Paint();
-                    myRectPaint.setStrokeWidth(5);
-                    myRectPaint.setColor(Color.RED);
-                    myRectPaint.setStyle(Paint.Style.STROKE);
-
-                    Frame frame = new Frame.Builder().setBitmap(customdcBitmap).build();
-                    SparseArray<Face> faces = faceDetector.detect(frame);
-
-                    Log.d("FACES", "Number of faces : "+faces.size());
-                    for (int i = 0; i < faces.size(); i++) {
-                        Face thisFace = faces.valueAt(i);
-                        float x1 = thisFace.getPosition().x;
-                        float y1 = thisFace.getPosition().y;
-                        float x2 = x1 + thisFace.getWidth();
-                        float y2 = y1 + thisFace.getHeight();
-                        float width = thisFace.getWidth();
-                        float height = thisFace.getHeight();
-                        myRectPaint.setColor(Color.BLUE);
-                        try {
-                            ThermalImage thermalImage = ThermalStore.getThermalImage();
-                            int rectangleX = (int) (x1 + width / 2);
-                            int rectangleY = (int) (y1 + height / 2);
-                            try{
-                                double averageTemp = 0;
-                                averageTemp = thermalImage.getValueAt(new Point(rectangleX, rectangleY)) ;
-                                averageTemp += thermalImage.getValueAt(new Point((int)(x1+width/3), (int)(y1+height/3)));
-                                averageTemp += thermalImage.getValueAt(new Point((int)(x1+(2*(width/3))), (int)(y1+height/3)));
-                                averageTemp += thermalImage.getValueAt(new Point((int)(x1+width/3), (int)(y1+ (2*(height/3)))));
-                                averageTemp += thermalImage.getValueAt(new Point((int)(x1+(2*(width/3))), (int)((y1+2*(height/3)))));
-                                averageTemp/=5.0;
-                                averageTemp-=273;
-                                Log.d("TEMP", Double.toString(averageTemp));
-                                myRectPaint.setTextSize((int) (70));
-                                tempCanvas.drawText( Double.toString( averageTemp), x1, y1, myRectPaint);
-                                if( averageTemp >= 36.5){
-                                    myRectPaint.setColor(Color.RED);
-                                    tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
-                                } else{
-                                    myRectPaint.setColor(Color.BLUE);
-                                    tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
-                                }
-
-                            }catch (Exception e){
-                                Log.d("EX", e.toString());
-                            }
-                        } catch (Exception e) {
-                            Log.d("EX", e.toString());
-                        }
-                    }
-
-
-                    photoImage.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
-
-//                    photoImage.setImageBitmap(customdcBitmap);
+                    photoImage.setImageBitmap(dcBitmap);
                 }
             });
 
