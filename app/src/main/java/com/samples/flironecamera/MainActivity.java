@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
 //                    photoImage.setImageDrawable(new BitmapDrawable(getResources(),tempBitmap));
 
                     msxImage.setImageBitmap(dataHolder.msxBitmap);
-//                    photoImage.setImageBitmap(dataHolder.dcBitmap);
+                    photoImage.setImageBitmap(dataHolder.dcBitmap);
 
 
                 }
@@ -342,6 +342,8 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "framebuffer size:" + framesBuffer.size());
                     FrameDataHolder poll = framesBuffer.poll();
 //                    msxImage.setImageBitmap(poll.msxBitmap);
+                      photoImage.setImageBitmap(dcBitmap);
+
 //
 //                    Bitmap customdcBitmap = poll.dcBitmap;
 //
@@ -411,7 +413,6 @@ public class MainActivity extends AppCompatActivity {
 //
 //                    photoImage.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
 
-                    photoImage.setImageBitmap(dcBitmap);
                 }
             });
 
