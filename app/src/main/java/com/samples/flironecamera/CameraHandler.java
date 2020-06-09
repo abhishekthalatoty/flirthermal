@@ -20,6 +20,12 @@ import android.util.SparseArray;
 
 import androidx.appcompat.app.AlertDialog;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.flir.thermalsdk.androidsdk.image.BitmapAndroid;
 import com.flir.thermalsdk.image.Point;
 import com.flir.thermalsdk.image.ThermalImage;
@@ -69,6 +75,7 @@ class CameraHandler {
     private static final String TAG = "CameraHandler";
 
     private StreamDataListener streamDataListener;
+    private RequestQueue queue;
 
     public interface StreamDataListener {
         void images(FrameDataHolder dataHolder);
@@ -77,6 +84,7 @@ class CameraHandler {
     Context wrapper;
     CameraHandler(Context context){
         this.wrapper = context;
+        queue = Volley.newRequestQueue(wrapper);
     }
 
     //Discovered FLIR cameras
@@ -318,7 +326,7 @@ class CameraHandler {
                         }
 
                     tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
-            }
+                }
             }catch (Exception e) {
                 Log.d("EX", "LOGEX" + e.toString());
             }

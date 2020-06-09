@@ -17,6 +17,7 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
@@ -24,6 +25,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.flir.thermalsdk.ErrorCode;
 import com.flir.thermalsdk.androidsdk.ThermalSdkAndroid;
 import com.flir.thermalsdk.androidsdk.live.connectivity.UsbPermissionHandler;
@@ -40,8 +52,14 @@ import com.google.android.gms.vision.face.Face;
 import com.google.android.gms.vision.face.FaceDetector;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import androidx.appcompat.app.AlertDialog;
@@ -75,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
     private LinkedBlockingQueue<FrameDataHolder> framesBuffer = new LinkedBlockingQueue(21);
     private UsbPermissionHandler usbPermissionHandler = new UsbPermissionHandler();
+    private RequestQueue queue;
 
     /**
      * Show message on the screen
@@ -98,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
         permissionHandler = new PermissionHandler(showMessage, MainActivity.this);
 
         cameraHandler = new CameraHandler(getApplicationContext());
-
+        queue = Volley.newRequestQueue(this);
         setupViews();
 
 //        showSDKversion(ThermalSdkAndroid.getVersion());
@@ -283,39 +302,6 @@ public class MainActivity extends AppCompatActivity {
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-//                     Bitmap msxBitmap = dataHolder.msxBitmap;
-//                     Bitmap dcBitmap = dataHolder.dcBitmap;
-//                    Paint myRectPaint = new Paint();
-//                    myRectPaint.setStrokeWidth(5);
-//                    myRectPaint.setColor(Color.RED);
-//                    myRectPaint.setStyle(Paint.Style.STROKE);
-//
-//                    Bitmap tempBitmap = Bitmap.createBitmap(dcBitmap.getWidth(), dcBitmap.getHeight(), Bitmap.Config.RGB_565);
-//                    Canvas tempCanvas = new Canvas(tempBitmap);
-//                    tempCanvas.drawBitmap(dcBitmap, 0, 0, null);
-//
-//                    FaceDetector faceDetector = new
-//                            FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(true)
-//                            .build();
-//                    if(!faceDetector.isOperational()){
-////                new AlertDialog.Builder(v.getContext()).setMessage("Could not set up the face detector!").show();
-//                        return;
-//                    }
-//
-//
-//                    Frame frame = new Frame.Builder().setBitmap(dcBitmap).build();
-//                    SparseArray<Face> faces = faceDetector.detect(frame);
-//
-//                    for(int i=0; i<faces.size(); i++) {
-//                        Face thisFace = faces.valueAt(i);
-//                        float x1 = thisFace.getPosition().x;
-//                        float y1 = thisFace.getPosition().y;
-//                        float x2 = x1 + thisFace.getWidth();
-//                        float y2 = y1 + thisFace.getHeight();
-//                        tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
-//                    }
-//                    photoImage.setImageDrawable(new BitmapDrawable(getResources(),tempBitmap));
-
                     msxImage.setImageBitmap(dataHolder.msxBitmap);
                     photoImage.setImageBitmap(dataHolder.dcBitmap);
 
@@ -326,6 +312,8 @@ public class MainActivity extends AppCompatActivity {
 
         private static final String myTAG = "MY";
 
+
+        //  WE SET THE IMAGES HERE
         @Override
         public void images(Bitmap msxBitmap, Bitmap dcBitmap) {
 
@@ -342,77 +330,35 @@ public class MainActivity extends AppCompatActivity {
                     Log.d(TAG, "framebuffer size:" + framesBuffer.size());
                     FrameDataHolder poll = framesBuffer.poll();
 //                    msxImage.setImageBitmap(poll.msxBitmap);
-                      photoImage.setImageBitmap(dcBitmap);
 
-//
-//                    Bitmap customdcBitmap = poll.dcBitmap;
-//
-//
-//                    Bitmap tempBitmap = Bitmap.createBitmap(customdcBitmap.getWidth(), customdcBitmap.getHeight(), Bitmap.Config.RGB_565);
-//                    Canvas tempCanvas = new Canvas(tempBitmap);
-//                    tempCanvas.drawBitmap(customdcBitmap, 0, 0, null);
-//
-//                    FaceDetector faceDetector = new
-//                            FaceDetector.Builder(getApplicationContext()).setTrackingEnabled(true)
-//                            .build();
-//                    if (!faceDetector.isOperational()) {
-////                new AlertDialog.Builder(v.getContext()).setMessage("Could not set up the face detector!").show();
-//                        return;
-//                    }
-//
-//                    Paint myRectPaint = new Paint();
-//                    myRectPaint.setStrokeWidth(5);
-//                    myRectPaint.setColor(Color.RED);
-//                    myRectPaint.setStyle(Paint.Style.STROKE);
-//
-//                    Frame frame = new Frame.Builder().setBitmap(customdcBitmap).build();
-//                    SparseArray<Face> faces = faceDetector.detect(frame);
-//
-//                    Log.d("FACES", "Number of faces : "+faces.size());
-//                    for (int i = 0; i < faces.size(); i++) {
-//                        Face thisFace = faces.valueAt(i);
-//                        float x1 = thisFace.getPosition().x;
-//                        float y1 = thisFace.getPosition().y;
-//                        float x2 = x1 + thisFace.getWidth();
-//                        float y2 = y1 + thisFace.getHeight();
-//                        float width = thisFace.getWidth();
-//                        float height = thisFace.getHeight();
-//                        myRectPaint.setColor(Color.BLUE);
-//                        try {
-//                            ThermalImage thermalImage = ThermalStore.getThermalImage();
-//                            int rectangleX = (int) (x1 + width / 2);
-//                            int rectangleY = (int) (y1 + height / 2);
-//                            try{
-//                                double averageTemp = 0;
-//                                averageTemp = thermalImage.getValueAt(new Point(rectangleX, rectangleY)) ;
-//                                averageTemp += thermalImage.getValueAt(new Point((int)(x1+width/3), (int)(y1+height/3)));
-//                                averageTemp += thermalImage.getValueAt(new Point((int)(x1+(2*(width/3))), (int)(y1+height/3)));
-//                                averageTemp += thermalImage.getValueAt(new Point((int)(x1+width/3), (int)(y1+ (2*(height/3)))));
-//                                averageTemp += thermalImage.getValueAt(new Point((int)(x1+(2*(width/3))), (int)((y1+2*(height/3)))));
-//                                averageTemp/=5.0;
-//                                averageTemp-=273;
-//                                Log.d("TEMP", Double.toString(averageTemp));
-//                                myRectPaint.setTextSize((int) (70));
-//                                tempCanvas.drawText( Double.toString( averageTemp), x1, y1, myRectPaint);
-//                                if( averageTemp >= 36.5){
-//                                    myRectPaint.setColor(Color.RED);
-//                                    tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
-//                                } else{
-//                                    myRectPaint.setColor(Color.BLUE);
-//                                    tempCanvas.drawRoundRect(new RectF(x1, y1, x2, y2), 2, 2, myRectPaint);
-//                                }
-//
-//                            }catch (Exception e){
-//                                Log.d("EX", e.toString());
-//                            }
-//                        } catch (Exception e) {
-//                            Log.d("EX", e.toString());
-//                        }
-//                    }
-//
-//
-//                    photoImage.setImageDrawable(new BitmapDrawable(getResources(), tempBitmap));
+                    // IMAGE WE SHOW ON SCREEN.
+                    photoImage.setImageBitmap(dcBitmap);
 
+
+
+                    // CONVERTING IMAGE
+                    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                    dcBitmap.compress(Bitmap.CompressFormat.JPEG, 35, byteArrayOutputStream);
+                    byte[] byteArray = byteArrayOutputStream .toByteArray();
+                    String encoded = Base64.encodeToString(byteArray, Base64.NO_WRAP);
+                    Map<String, String> object = new HashMap<>();
+                    object.put("image", encoded);
+
+                    // SENDING REQUEST. CHANGE URL
+                    CustomRequest jsonObjectRequest = new CustomRequest(Request.Method.POST, "http://192.168.1.2:3000", object,
+                            new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    Log.d("volley", "Response recived" + response.toString());
+
+                                }
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.d("volley", "onErrorResponse:  " + error.toString());
+                        }
+                    });
+                    queue.add(jsonObjectRequest);
                 }
             });
 
@@ -471,4 +417,52 @@ public class MainActivity extends AppCompatActivity {
         photoImage = findViewById(R.id.photo_image);
     }
 
+}
+
+
+class CustomRequest extends Request<JSONObject> {
+
+    private Response.Listener<JSONObject> listener;
+    private Map<String, String> params;
+
+    public CustomRequest(String url, Map<String, String> params,
+                         Response.Listener<JSONObject> reponseListener, Response.ErrorListener errorListener) {
+        super(Method.GET, url, errorListener);
+        this.listener = reponseListener;
+        this.params = params;
+    }
+
+    public CustomRequest(int method, String url, Map<String, String> params,
+                         Response.Listener<JSONObject> reponseListener, Response.ErrorListener errorListener) {
+        super(method, url, errorListener);
+        this.listener = reponseListener;
+        this.params = params;
+    }
+
+    protected Map<String, String> getParams()
+            throws com.android.volley.AuthFailureError {
+        return params;
+    }
+
+    ;
+
+    @Override
+    protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+        try {
+            String jsonString = new String(response.data,
+                    HttpHeaderParser.parseCharset(response.headers));
+            return Response.success(new JSONObject(jsonString),
+                    HttpHeaderParser.parseCacheHeaders(response));
+        } catch (UnsupportedEncodingException e) {
+            return Response.error(new ParseError(e));
+        } catch (JSONException je) {
+            return Response.error(new ParseError(je));
+        }
+    }
+
+    @Override
+    protected void deliverResponse(JSONObject response) {
+        // TODO Auto-generated method stub
+        listener.onResponse(response);
+    }
 }

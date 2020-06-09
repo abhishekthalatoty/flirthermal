@@ -36,6 +36,8 @@ dependencies {
     implementation 'com.google.android.gms:play-services:7.8+'
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.android.volley:volley:1.1.0'
+
     // add Thermal SDK 'aar' library located under 'modules/thermalsdk/build/outputs/aar'
 //    // add Thermal SDK for Android 'aar' library located under 'modules/thermalsdk/build/outputs/aar'
 //    implementation(name: 'androidsdk-release', ext: 'aar')
