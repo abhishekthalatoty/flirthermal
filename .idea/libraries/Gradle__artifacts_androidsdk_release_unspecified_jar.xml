@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: artifacts:androidsdk-release:unspecified@jar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/463e0bc1f3682534338f37efd1437e66/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/463e0bc1f3682534338f37efd1437e66/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/463e0bc1f3682534338f37efd1437e66/jars/libs/jmdns-3.5.5.jar!/" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/463e0bc1f3682534338f37efd1437e66/jars/libs/libaums-0.5.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

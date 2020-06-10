@@ -329,7 +329,7 @@ public class MainActivity extends AppCompatActivity {
                 public void run() {
                     Log.d(TAG, "framebuffer size:" + framesBuffer.size());
                     FrameDataHolder poll = framesBuffer.poll();
-//                    msxImage.setImageBitmap(poll.msxBitmap);
+//                     msxImage.setImageBitmap(poll.msxBitmap);
 
                     // IMAGE WE SHOW ON SCREEN.
                     photoImage.setImageBitmap(dcBitmap);
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity {
                     object.put("image", encoded);
 
                     // SENDING REQUEST. CHANGE URL
-                    CustomRequest jsonObjectRequest = new CustomRequest(Request.Method.POST, "http://192.168.1.2:3000", object,
+                    CustomRequest jsonObjectRequest = new CustomRequest(Request.Method.POST, "http://192.168.1.2:5000/api", object,
                             new Response.Listener<JSONObject>() {
                                 @Override
                                 public void onResponse(JSONObject response) {
